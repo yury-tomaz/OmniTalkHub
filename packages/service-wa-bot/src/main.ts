@@ -1,8 +1,7 @@
+import { env } from "./infrastructure/config/env";
 import { app } from "./infrastructure/express/app";
 import { logger } from "./infrastructure/logger";
 
-const port = 3000;
-
-app.listen(port, () => {
- logger.info(`server run in por: ${port}`)
+app.listen(env.port, () => {
+ logger.info(`server run in por: ${env.port}`)
 });
