@@ -1,6 +1,0 @@
-node_modules
-.idea
-data
-packages/**/node_modules
-packages/**/dist
-packages/**/.env
