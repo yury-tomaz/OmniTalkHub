@@ -1,3 +1,4 @@
+const PORT = process.env.PORT || 3333;
 const WEBHOOK_ENABLED = (process.env.WEBHOOK_ENABLED && process.env.WEBHOOK_ENABLED === 'true') || false;
 const WEBHOOK_URL = process.env.WEBHOOK_URL || 'http://localhost:3333/webhook';
 
@@ -13,7 +14,7 @@ const DB_PASSWORD = process.env.DB_PASSWORD || 'password';
 const DB_DATABASE = process.env.DB_DATABASE || 'database';
 
 export const env = {
-
+  port: PORT,
   webhookEnabled: WEBHOOK_ENABLED,
   webhookUrl: WEBHOOK_URL,
   webhookBase64: WEBHOOK_BASE64,
