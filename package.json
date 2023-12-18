@@ -12,7 +12,7 @@
     "prepare": "husky install"
   },
   "workspaces": [
-    "packages/service-wa-bot"
+    "packages/*"
   ],
   "devDependencies": {
     "@commitlint/cli": "^18.4.3",
