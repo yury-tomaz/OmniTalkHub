@@ -11,6 +11,7 @@ export class PrismaClientManager {
 
   public static getInstance(): PrismaClientManager {
     if (!PrismaClientManager.instance) {
+      logger.info('Creating PrismaClientManager instance');
       PrismaClientManager.instance = new PrismaClientManager();
     }
 
