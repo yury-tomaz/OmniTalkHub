@@ -5,7 +5,7 @@ services:
     image: postgres:15.3-alpine
     restart: always
     environment:
-      - POSTGRES_DB=
+      - POSTGRES_DB=mydb
       - POSTGRES_USER=johndoe
       - POSTGRES_PASSWORD=randompassword
     volumes:
@@ -67,5 +67,3 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-
-
