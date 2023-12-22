@@ -18,7 +18,7 @@ jobs:
 
       - uses: mshick/add-pr-comment@v2
         with:
-          repo-token: ${{ secrets.PERSONAL_TOKEN}}
+          repo-token: ${{secrets.PERSONAL_TOKEN}}
           message-id: pr-test
           message: |
             Thanks for your contribution.
@@ -28,4 +28,3 @@ jobs:
             The community can help reacting with a thumb up (:thumbsup:) for approval and rocket (:rocket:) for who has tested it.
 
             To test this PR you can run the following command below:
-            ```
