@@ -1,11 +1,12 @@
 {
   "extends": "../../tsconfig.build.json",
   "compilerOptions": {
-      "outDir": "./dist/",
-      "esModuleInterop": true,
+    "outDir": "./dist/",
+    "target": "ES2015",
+    "module": "CommonJS",
+
   },
   "include": [
-      "./**/*.ts"
+    "./**/*.ts"
   ]
-  
 }
