@@ -1,0 +1,17 @@
+name: Mark stale issues and pull requests
+
+on:
+  schedule:
+  - cron: "30 1 * * *"
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/stale@v3
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }} 
+        stale-issue-message: 'Este problema está inativo, pois está aberto há 6 dias sem atividade. Remova o rótulo de inatividade ou comente, caso contrário, será fechado em 2 dias.'
+        stale-pr-message: 'Este Pull Request está inativo, pois está aberto há 6 dias sem atividade. Remova o rótulo de inatividade ou comente, caso contrário, será fechado em 2 dias.'
+        days-before-stale: 6
+        days-before-close: 2
