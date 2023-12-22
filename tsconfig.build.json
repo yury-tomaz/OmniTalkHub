@@ -1,0 +1,19 @@
+{
+  "exclude": [
+    "**/*.test.ts",
+    "**/*.stub.ts",
+    "node_modules",
+    "dist"
+  ],
+  "compilerOptions": {
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "paths": {
+      "@acme-corp/*": [
+        "./packages/*/"
+      ]
+    }
+  }
+}
