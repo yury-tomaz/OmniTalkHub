@@ -1,4 +1,11 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
 
-npx commitlint --edit $1
+DEPENDABOT_EMAIL="dependabot[bot]@users.noreply.github.com"
+
+if git log -1 --format='%ae' | grep -q "$DEPENDABOT_EMAIL"; then
+  echo "Commit feito pelo Dependabot. Pulando verificação do commitlint."
+else
+
+  . "$(dirname -- "$0")/_/husky.sh"
+  npx commitlint --edit $1
+fi
