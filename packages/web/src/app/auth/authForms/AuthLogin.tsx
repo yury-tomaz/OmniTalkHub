@@ -12,7 +12,7 @@ import CustomTextField from "@/app/(DashboardLayout)/components/forms/theme-elem
 import CustomFormLabel from "@/app/(DashboardLayout)/components/forms/theme-elements/CustomFormLabel";
 import AuthSocialButtons from "./AuthSocialButtons";
 
-const AuthLogin = ({ title, subtitle, subtext }: loginType) => (
+const AuthLogin = ({ title, subtitle, subtext, password, username, setPassword, setUserName, submit }: loginType) => (
   <>
     {title ? (
       <Typography fontWeight="700" variant="h3" mb={1}>
@@ -22,7 +22,8 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => (
 
     {subtext}
 
-    <AuthSocialButtons title="Sign in with" />
+    <AuthSocialButtons title="Entrar com" />
+
     <Box mt={3}>
       <Divider>
         <Typography
@@ -33,19 +34,28 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => (
           position="relative"
           px={2}
         >
-          or sign in with
+          ou faça login com
         </Typography>
       </Divider>
     </Box>
 
     <Stack>
       <Box>
-        <CustomFormLabel htmlFor="username">Username</CustomFormLabel>
-        <CustomTextField id="username" variant="outlined" fullWidth />
+        <CustomFormLabel htmlFor="username">Usuário</CustomFormLabel>
+        <CustomTextField
+          onChange={(e:any) => setUserName(e.target.value)}
+          value={username}
+
+          id="username"
+          variant="outlined"
+          fullWidth
+        />
       </Box>
       <Box>
-        <CustomFormLabel htmlFor="password">Password</CustomFormLabel>
+        <CustomFormLabel htmlFor="password">Senha</CustomFormLabel>
         <CustomTextField
+          onChange={(e:any) => setPassword(e.target.value)}
+          value={password}
           id="password"
           type="password"
           variant="outlined"
@@ -61,7 +71,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => (
         <FormGroup>
           <FormControlLabel
             control={<CustomCheckbox defaultChecked />}
-            label="Remeber this Device"
+            label="Lembre-me"
           />
         </FormGroup>
         <Typography
@@ -73,7 +83,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => (
             color: "primary.main",
           }}
         >
-          Forgot Password ?
+          Esqueceu sua senha ?
         </Typography>
       </Stack>
     </Stack>
@@ -83,8 +93,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => (
         variant="contained"
         size="large"
         fullWidth
-        component={Link}
-        href="/"
+        onClick={submit}
         type="submit"
       >
         Sign In
