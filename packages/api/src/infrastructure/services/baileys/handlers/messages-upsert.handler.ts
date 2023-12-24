@@ -1,8 +1,8 @@
 import  { MessageUpsertType, proto, WAMessage } from "@whiskeysockets/baileys";
-import { env } from "../../../config/env";
 import { downloadMessage } from "../helpers/download-message.helper";
 import { checkWebhookAllowedEvents } from "../helpers/check-webhook-allowed-events.helper";
 import { Baileys } from "../baileys";
+import env from "../../../config/env";
 
 interface Props {
   messages: proto.IWebMessageInfo[];
@@ -27,13 +27,12 @@ export class MessagesUpsertHandler {
     }
     if (type !== 'notify') return;
 
-    if (env.webhookBase64) {
+    if (env.webhook.base64) {
       const unreadMessages = messages.map(message => {
         return {
           remoteJid: message.key.remoteJid,
           id: message.key.id,
           participant: message.key.participant,
-
         }
       })
       await socket.readMessages(unreadMessages);
@@ -56,7 +55,7 @@ export class MessagesUpsertHandler {
         webhookData['text'] = messages;
       }
 
-      if (env.webhookBase64) {
+      if (env.webhook.base64) {
         switch (messageType) {
           case 'imageMessage':
             webhookData['msgContent'] = await downloadMessage({
@@ -85,9 +84,12 @@ export class MessagesUpsertHandler {
         }
       }
 
-      const isWebhookAllowedEvent : boolean = checkWebhookAllowedEvents(['all', 'message', 'message.new']);
+      const isWebhookAllowedEvent : boolean = checkWebhookAllowedEvents(
+        ['all', 'message', 'message.new'],
+        baileysInstance?.heardEvents?? []
+      );
       if (isWebhookAllowedEvent ) {
-        // TODO: send webhook
+        // TODO: notify
       }
 
     });

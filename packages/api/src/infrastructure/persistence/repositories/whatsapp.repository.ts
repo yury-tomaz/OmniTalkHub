@@ -1,50 +1,91 @@
-import { WhatsappGateway } from "../../../modules/baileys/gateway/whatsapp.gateway";
-import { Whatsapp } from "../../../modules/baileys/domain/baileys-instance.entity";
+import { WhatsappRepositoryInterface } from "packages/api/src/modules/whatsapp/domain/repository/whatsapp.repository.interface";
+import { PrismaClient } from '../../../generated/client';
+import { Whatsapp } from "packages/api/src/modules/whatsapp/domain/whatsapp.entity";
+import { logger } from "../../logger";
+import { PrismaClientManager } from "../../services/prisma-client-manager";
 
+export class WhatsappRepository implements WhatsappRepositoryInterface {
+ private prisma: PrismaClient;
 
-export class WhatsappRepository implements WhatsappGateway{
-  private baileysInstances: Whatsapp[] = [];
+ constructor(tenantId?: string) {
+  this.prisma = PrismaClientManager.getInstance().getClient(tenantId || 'public')!;
+ }
 
-  public async add(whatsapp: Whatsapp): Promise<void> {
-    const alreadyExists = this.baileysInstances.find(instance => instance.key === whatsapp.key);
-    if (alreadyExists?.socket) {
-      throw new Error('Baileys instance already exists');
+ async create(entity: Whatsapp): Promise<void> {
+  try {
+   await this.prisma.whatsapp.create({
+    data: {
+     name: entity.name,
+     webhookUrl: entity.webhookUrl,
+     allowWebhook: entity.allowWebhook,
+     heardEvents: entity.heardEvents,
+     chats: entity.chats,
+     tenantId: entity.tenantId.id,
     }
-    this.baileysInstances.push(whatsapp);
+   })
+  } catch (error) {
+   logger.error(error)
+   await this.prisma.$disconnect()
+   process.exit(1)
   }
+ }
 
-  public async find(key: string): Promise<Whatsapp> {
-    const instance = this.baileysInstances
-      .find(instance => instance.key.id === key);
-    if (!instance) {
-      throw new Error('Baileys instance not found');
+ async find(id: string): Promise<Whatsapp> {
+  try {
+   const whatsapp = await this.prisma.whatsapp.findUnique({
+    where: {
+     id: id
     }
-    return instance;
+   })
+   return this.instanciateWhatsapp(whatsapp)
+  } catch (error) {
+   logger.error(error)
+   await this.prisma.$disconnect()
+   process.exit(1)
   }
+ }
 
-  public async getAll(): Promise<Whatsapp[]> {
-    return this.baileysInstances;
+ async findAll(): Promise<Whatsapp[]> {
+  try {
+   const whatsapp = await this.prisma.whatsapp.findMany();
+   return whatsapp.map((whatsapp:any) => this.instanciateWhatsapp(whatsapp));
+  } catch (error) {
+   logger.error(error)
+   await this.prisma.$disconnect()
+   process.exit(1)
   }
+ }
 
-  public async findAll(tenantId: string): Promise<Whatsapp[]> {
-    return this.baileysInstances.filter(instance => instance.tenantId.id === tenantId);
-  }
-
-  public async update(whatsapp: Whatsapp): Promise<void> {
-    const instance = this.baileysInstances.find(instance => instance.key === whatsapp.key);
-    if (!instance) {
-      throw new Error('Baileys instance not found');
+ async update(entity: Whatsapp): Promise<void> {
+  try {
+   await this.prisma.whatsapp.update({
+    where: {
+     id: entity.id.id
+    },
+    data: {
+     name: entity.name,
+     webhookUrl: entity.webhookUrl,
+     allowWebhook: entity.allowWebhook,
+     heardEvents: entity.heardEvents,
+     chats: entity.chats,
     }
-    this.baileysInstances = this.baileysInstances.map(instance => instance.key === whatsapp.key ? whatsapp : instance);
+   })
+  } catch (error) {
+   logger.error(error)
+   await this.prisma.$disconnect()
+   process.exit(1)
   }
+ }
 
-  public async delete(key: string): Promise<void> {
-    const instance = this.baileysInstances.find(instance => instance.key.id === key);
-    if (!instance) {
-      throw new Error('Baileys instance not found');
-    }
-    this.baileysInstances = this.baileysInstances
-      .filter(instance => instance.key.id !== key);
-  }
-
+ private instanciateWhatsapp(whatsapp: any): Whatsapp {
+  return new Whatsapp({
+   id: whatsapp.id,
+   tenantId: whatsapp.tenantId,
+   name: whatsapp.name,
+   webhookUrl: whatsapp.webhookUrl,
+   allowWebhook: whatsapp.allowWebhook,
+   heardEvents: whatsapp.heardEvents,
+   chats: whatsapp.chats,
+  })
+ }
 }

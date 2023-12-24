@@ -3,11 +3,13 @@ import { ConnectionState } from "@whiskeysockets/baileys/lib/Types/State";
 import { checkWebhookAllowedEvents } from "../helpers/check-webhook-allowed-events.helper";
 import { MessagesUpsertHandler } from "./messages-upsert.handler";
 import { GroupMetadata, ParticipantAction } from "@whiskeysockets/baileys";
-import { WhatsappGateway } from "../../../../modules/baileys/gateway/whatsapp.gateway";
-import { Whatsapp } from "../../../../modules/baileys/domain/baileys-instance.entity";
+
 import { logger } from "../../../logger";
 import { Baileys } from "../baileys";
-import Id from "../../../../modules/@shared/domain/value-object/id.value-object";
+import { Whatsapp } from "../../../../modules/whatsapp/domain/whatsapp.entity";
+import {
+  WhatsappRepositoryInterface
+} from "../../../../modules/whatsapp/domain/repository/whatsapp.repository.interface";
 
 interface GroupParticipantsUpdateType {
   id: string;
@@ -21,19 +23,19 @@ export class EventHandler {
   constructor(
     private connectionUpdateHandler: ConnectionUpdateHandler,
     private messagesUpsert: MessagesUpsertHandler,
-    private repository: WhatsappGateway,
+    private repository: WhatsappRepositoryInterface,
   ) {
   }
 
   async handle(baileysInstance: Baileys) {
-    const {socket} = baileysInstance;
+    const { socket } = baileysInstance;
 
     if (!socket) throw new Error('Uninitialized socket');
 
     this.baileysInstance = baileysInstance;
 
     socket.ev.on('connection.update', async (update: Partial<ConnectionState>) => {
-      const {connection, lastDisconnect, qr} = update;
+      const { connection, lastDisconnect, qr } = update;
       if (connection === 'connecting') return;
 
       await this.connectionUpdateHandler.handle({
@@ -42,14 +44,17 @@ export class EventHandler {
     });
 
     socket.ev.on('presence.update', async (json) => {
-      const check: boolean = checkWebhookAllowedEvents(['all', 'presence', 'presence.update']);
+      const check: boolean = checkWebhookAllowedEvents(
+        ['all', 'presence', 'presence.update'],
+        this.baileysInstance?.heardEvents ?? []
+      );
 
       if (check) {
         // TODO: send webhook
       }
     });
 
-    socket.ev.on('messaging-history.set', async ({chats}) => {
+    socket.ev.on('messaging-history.set', async ({ chats }) => {
       baileysInstance.chats = chats.map(chat => {
         return {
           ...chat,
@@ -98,8 +103,8 @@ export class EventHandler {
       });
     });
 
-    socket.ev.on('messages.upsert', async ({messages, type}) => {
-      await this.messagesUpsert.handle({messages, type, baileysInstance});
+    socket.ev.on('messages.upsert', async ({ messages, type }) => {
+      await this.messagesUpsert.handle({ messages, type, baileysInstance });
     });
 
     socket.ev.on('messages.update', async (messages) => {
@@ -111,23 +116,33 @@ export class EventHandler {
         const contentOffer = data.content.find((e: any) => e.tag === 'offer');
         const contentTerminate = data.content.find((e: any) => e.tag === 'terminate');
         if (contentOffer) {
-          const check: boolean = checkWebhookAllowedEvents(['all', 'call', 'CB:call', 'call:offer']);
+          const check: boolean = checkWebhookAllowedEvents(
+            ['all', 'call', 'CB:call', 'call:offer'],
+            this.baileysInstance?.heardEvents ?? []
+          );
           if (check) {
             // TODO: send webhook
           }
         } else if (contentTerminate) {
-          const check: boolean = checkWebhookAllowedEvents(['all', 'call', 'CB:call', 'call:terminate']);
+          const check: boolean = checkWebhookAllowedEvents(
+            ['all', 'call', 'CB:call', 'call:terminate'],
+            this.baileysInstance?.heardEvents ?? []
+          );
           if (check) {
             // TODO: send webhook
           }
         }
-
       }
     });
 
     socket.ev.on('groups.upsert', async (newChat: GroupMetadata[]) => {
       await this.createGroupByApp(newChat);
-      const check: boolean = checkWebhookAllowedEvents(['all', 'groups', 'groups.upsert']);
+
+      const check: boolean = checkWebhookAllowedEvents(
+        ['all', 'groups', 'groups.upsert'],
+        this.baileysInstance?.heardEvents ?? []
+      );
+
       if (check) {
         //  TODO: send webhook
       }
@@ -145,7 +160,7 @@ export class EventHandler {
   }
 
   private async updateGroupParticipantsByApp(newChat: GroupParticipantsUpdateType) {
-    if(!this.baileysInstance) return;
+    if (!this.baileysInstance) return;
     const key = this.baileysInstance.key;
 
     if (!key) throw new Error('Uninitialized key');
@@ -156,7 +171,8 @@ export class EventHandler {
         if (!response) return;
         let chat = response.chats;
 
-        const index = chat.find((c) => c.id === newChat.id);
+        const index = chat.find((c: any) => c.id === newChat.id);
+
         let is_owner = false;
         if (index) {
           if (!index.participant) index.participant = [];
@@ -210,17 +226,17 @@ export class EventHandler {
           }
 
           if (is_owner) {
-            chat = chat.filter((c) => c.id !== newChat.id)
+            chat = chat.filter((c: any) => c.id !== newChat.id)
           } else {
-            chat.filter((c) => c.id === newChat.id)[0] = chat
+            chat.filter((c: any) => c.id === newChat.id)[0] = chat
           }
           const output = new Whatsapp({
             id: response.id,
-            key: new Id(key),
             tenantId: response.tenantId,
+            name: response.name,
             webhookUrl: response.webhookUrl,
             allowWebhook: response.allowWebhook,
-            createdAt: response.createdAt,
+            heardEvents: response.heardEvents,
           })
 
           output.chats = chat;
@@ -234,7 +250,7 @@ export class EventHandler {
   }
 
   private async updateGroupSubjectByApp(newChat: Partial<GroupMetadata>[]) {
-    if(!this.baileysInstance) return;
+    if (!this.baileysInstance) return;
     const key = this.baileysInstance.key;
     if (!key) throw new Error('Uninitialized key');
 
@@ -246,15 +262,15 @@ export class EventHandler {
         if (!response) return;
         let chat = response.chats
 
-        chat.find((c) => c.id === newChat[0].id).name = newChat[0].subject;
+        chat.find((c: any) => c.id === newChat[0].id).name = newChat[0].subject;
 
         const output = new Whatsapp({
           id: response.id,
-          key: new Id(key),
           tenantId: response.tenantId,
+          name: response.name,
           webhookUrl: response.webhookUrl,
           allowWebhook: response.allowWebhook,
-          createdAt: response.createdAt,
+          heardEvents: response.heardEvents,
         })
 
         await this.repository.update(output);
@@ -266,7 +282,7 @@ export class EventHandler {
   }
 
   private async createGroupByApp(newChat: GroupMetadata[]) {
-    if(!this.baileysInstance) return;
+    if (!this.baileysInstance) return;
     const key = this.baileysInstance.key;
 
     if (!key) throw new Error('Uninitialized key');
@@ -291,11 +307,11 @@ export class EventHandler {
 
         const output = new Whatsapp({
           id: response.id,
-          key: new Id(key),
           tenantId: response.tenantId,
+          name: response.name,
           webhookUrl: response.webhookUrl,
           allowWebhook: response.allowWebhook,
-          createdAt: response.createdAt,
+          heardEvents: response.heardEvents,
         })
 
         output.chats = chat;

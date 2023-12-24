@@ -7,7 +7,6 @@ import makeWASocket, {
 } from "@whiskeysockets/baileys";
 import { logger } from "../../logger";
 import { EventHandler } from "./handlers/event.handler";
-import { WhatsappServiceInterface } from "../../../modules/@shared/application/abstraction/whatsapp-service-interface";
 
 interface CustomSocketConfig extends Partial<SocketConfig> {
   auth: AuthenticationState;
@@ -17,50 +16,56 @@ interface CustomSocketConfig extends Partial<SocketConfig> {
 
 export interface BaileysInputDto {
   key: string;
+  name: string;
   tenantId: string;
   webhookUrl: string;
   allowWebhook: boolean;
   eventHandler: EventHandler;
+  heardEvents: string[];
 }
 
-export class Baileys implements WhatsappServiceInterface {
+export class Baileys {
   private readonly _key: string;
-  private readonly _tenantId: string;
-  private _webhookUrl: string;
-  private _allowWebhook: boolean;
-  private _qrCode: string | undefined;
-  private _socket: ReturnType<typeof makeWASocket> | undefined;
+  private _name: string;
+  private _tenantId: string;
+  private qrCode: string | undefined;
   private _qrRetry: number = 0;
-  private _messages: proto.IWebMessageInfo[] = [];
+  private _socket: ReturnType<typeof makeWASocket> | undefined;
   private _chats: any[] = [];
-  private _status: string | undefined;
-  private eventHandler: EventHandler
-
+  private _webhookUrl: string;
+  private _allowWebhook: boolean = false;
+  private _heardEvents: string[] = ['all'];
+  private _messages: proto.IWebMessageInfo[] = [];
+  private _isOn: boolean = false;
+  private readonly _eventHandler: EventHandler;
 
   constructor(input: BaileysInputDto) {
-    this._key = input.key;
-    this._tenantId = input.tenantId;
-    this._webhookUrl = input.webhookUrl;
+    this._key = `${input.key}`;
+    this._name = input.name;
+    this._eventHandler = input.eventHandler;
+    this._heardEvents = input.heardEvents;
     this._allowWebhook = input.allowWebhook;
-    this.eventHandler = input.eventHandler;
+    this._webhookUrl = input.webhookUrl;
+    this._tenantId = input.tenantId;
 
-    this.init().then(
+    this.start().then(
       () => logger.info('Baileys instance initialized'),
       (error) => logger.error('Error initializing baileys instance', error)
     );
   }
 
-  private async init() {
-    const {state, saveCreds} = await useMultiFileAuthState('auth_info_baileys');
+  async start() {
+    const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys');
+
     const socketConfig: CustomSocketConfig = {
       defaultQueryTimeoutMs: 60000,
       printQRInTerminal: true,
       logger: logger,
       auth: state,
-      browser: ['Whatsapp MD', 'Chrome', '4.0.0']
-    }
+      browser: ['Whatsapp MD', 'Chrome', '4.0.0'] as WABrowserDescription,
+    };
 
-    this._socket = makeWASocket(socketConfig)
+    this._socket = makeWASocket(socketConfig);
 
     if (!this._socket) {
       logger.error('Error initializing socket');
@@ -68,50 +73,42 @@ export class Baileys implements WhatsappServiceInterface {
     }
 
     this._socket.ev.on('creds.update', () => {
-      saveCreds()
+      saveCreds();
     });
 
-    await this.eventHandler.handle(this);
+    await this._eventHandler.handle(this);
   }
 
-  get tenantId(): string {
-    return this._tenantId;
+  get key(): string {
+    return this._key;
   }
 
-  get socket(): ReturnType<typeof makeWASocket> | undefined{
+  get qr(): string | undefined {
+    return this.qrCode;
+  }
+
+  set qr(value: string) {
+    this.qrCode = value;
+  }
+
+  get socket(): ReturnType<typeof makeWASocket> | undefined {
     return this._socket;
-  }
-
-  get qrCode(): string | undefined {
-    return this._qrCode;
-  }
-
-  set qrCode(value: string | undefined) {
-    this._qrCode = value;
-  }
-
-  get status(): string | undefined {
-    return this._status;
-  }
-
-  set status(value: string | undefined) {
-    this._status = value;
-  }
-
-  get qrRetry(): number | undefined {
-    return this._qrRetry;
-  }
-
-  set qrRetry(value: number) {
-    this._qrRetry = value;
   }
 
   get chats(): any[] {
     return this._chats;
   }
 
-  set chats(value: any[]) {
-    this._chats = value;
+  set chats(chats: any[]) {
+    this._chats = chats;
+  }
+
+  get heardEvents(): string[] {
+    return this._heardEvents;
+  }
+
+  set heardEvents(value: string[]) {
+    this._heardEvents = value;
   }
 
   get messages(): proto.IWebMessageInfo[] {
@@ -122,8 +119,12 @@ export class Baileys implements WhatsappServiceInterface {
     this._messages = value;
   }
 
-  get key(): string {
-    return this._key;
+  get isOn(): boolean {
+    return this._isOn;
+  }
+
+  set isOn(value: boolean) {
+    this._isOn = value;
   }
 
   get webhookUrl(): string {
@@ -142,4 +143,27 @@ export class Baileys implements WhatsappServiceInterface {
     this._allowWebhook = value;
   }
 
+  get qrRetry(): number {
+    return this._qrRetry;
+  }
+
+  sumQrRetry() {
+    this._qrRetry++;
+  }
+
+  get name(): string {
+    return this._name;
+  }
+
+  set name(value: string) {
+    this._name = value;
+  }
+
+  get tenantId(): string {
+    return this._tenantId;
+  }
+
+  set tenantId(value: string) {
+    this._tenantId = value;
+  }
 }

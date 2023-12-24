@@ -1,21 +1,17 @@
 import { EventHandler } from "./handlers/event.handler";
 import { ConnectionUpdateHandler } from "./handlers/connection-update.handler";
 import { MessagesUpsertHandler } from "./handlers/messages-upsert.handler";
-import { WhatsappRepository } from "../../persistence/repositories/whatsapp.repository";
 import { Baileys, } from "./baileys";
+import { WhatsappFactoryServiceInterface } from "../../../modules/whatsapp/abstractions/whatsapp.service.interface";
+import { WhatsappRepository } from "../../persistence/repositories/whatsapp.repository";
+import { Whatsapp } from "../../../modules/whatsapp/domain/whatsapp.entity";
 
-interface BaileysInputDto {
-  key: string;
-  tenantId: string;
-  webhookUrl: string;
-  allowWebhook: boolean;
-}
-
-export class BaileysFactory {
-  public create(input: BaileysInputDto): Baileys {
-    const connectionUpdateHandler = new ConnectionUpdateHandler();
+export class BaileysFactory implements WhatsappFactoryServiceInterface<Baileys>{
+  create(input: Whatsapp): Baileys {
     const messagesUpsert = new MessagesUpsertHandler();
-    const repository = new WhatsappRepository;
+    const repository = new WhatsappRepository(input.tenantId.id);
+    const connectionUpdateHandler = new ConnectionUpdateHandler(repository);
+
     const eventHandler = new EventHandler(
       connectionUpdateHandler,
       messagesUpsert,
@@ -23,7 +19,12 @@ export class BaileysFactory {
     );
 
     return new Baileys({
-      ...input,
+      name: input.name,
+      allowWebhook: input.allowWebhook,
+      key: input.id.id,
+      webhookUrl: input.webhookUrl,
+      tenantId: input.tenantId.id,
+      heardEvents: input.heardEvents,
       eventHandler,
     });
   }
