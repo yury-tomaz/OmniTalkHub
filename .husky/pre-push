@@ -1,4 +1,8 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+current_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
 
-if [ \main == 'main' ]; then echo 'Erro: Não é permitido fazer push diretamente para a branch main.' && exit 1; fi
+if [ "$current_branch" == "main" ]; then
+  echo "Erro: Não é permitido fazer push diretamente para a branch main."
+  exit 1
+fi
+
+exit 0
