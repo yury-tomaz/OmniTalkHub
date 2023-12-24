@@ -1,15 +1,15 @@
 ---
 name: Feature Requests
 about: Template for general issues/feature requests
-title: ''
-labels: ''
+title: 'feat: '
+labels: 'enhancement'
 assignees: ''
 
 ---
 
-**Before adding this issue, make sure you do the following to make sure this is not a duplicate:**
-1. Search through the repo's previous issues
-2. Read through the readme at least once
-3. Search the docs for the feature you're looking for
+**Antes de adicionar esse problema, faça o seguinte para garantir que não seja uma duplicata:**
+1. Pesquise os problemas anteriores do repositório
+2. Leia o leia-me pelo menos uma vez
+3. Pesquise nos documentos o recurso que você está procurando
 
 **Just describe the feature**
