@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+if [ \main == 'main' ]; then echo 'Erro: Não é permitido fazer push diretamente para a branch main.' && exit 1; fi
