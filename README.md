@@ -37,8 +37,8 @@ Se preferir rodar apenas a API ou a aplicação web separadamente, você pode ut
 # Estrutura do projeto
 📂 OmniTalkHub <br>
 ┣ 📂 packages <br>
-┃ ┣ 📂 [api]() <br> 
-┃ ┣ 📂 [web]() <br>
+┃ ┣ 📂 [api](./packages/api/README.md) <br> 
+┃ ┣ 📂 [web](./packages/web/README.md) <br>
 
 ## API
 A API é responsável por gerenciar os dados do projeto. Ela é construída com Node.js, Express e PostgreSQL e utiliza o ORM Prisma para realizar a conexão com o banco de dados.
