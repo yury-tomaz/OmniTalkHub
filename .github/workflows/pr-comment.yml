@@ -21,10 +21,10 @@ jobs:
           repo-token: ${{secrets.PERSONAL_TOKEN}}
           message-id: pr-test
           message: |
-            Thanks for your contribution.
+            Obrigado pela sua contribuição.
 
-            The next step is to wait for review and approval to merge it to main repository
+            A próxima etapa é aguardar a revisão e aprovação para mesclá-lo ao repositório principal
 
-            The community can help reacting with a thumb up (:thumbsup:) for approval and rocket (:rocket:) for who has tested it.
+            A comunidade pode ajudar reagindo com um polegar para cima 👍para aprovação e um foguete 🚀 para quem o testou.
 
-            To test this PR you can run the following command below:
+            Para testar este PR você pode executar o seguinte comando abaixo: 
