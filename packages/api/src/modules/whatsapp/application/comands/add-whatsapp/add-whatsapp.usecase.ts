@@ -23,9 +23,11 @@ export class AddWhatsappUseCase {
     }
 
     const whatsapp = new Whatsapp(props);
-    this.whatsappService.create(whatsapp);
 
+    this.whatsappService.create(whatsapp);
     this.eventDispatcher.notify(new this.event(props));
+
+    return whatsapp;
   }
 
 }
