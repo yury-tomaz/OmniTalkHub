@@ -1,13 +1,13 @@
 {
-
   "extends": "../../tsconfig.build.json",
   "compilerOptions": {
     "rootDir": "./",
     "outDir": "./dist/",
     "target": "ES2015",
     "module": "CommonJS",
-    "types": ["node"],
+    "types": ["node", "@types/jest"],
     "moduleResolution": "node",
+    "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
@@ -17,7 +17,6 @@
     "./**/*.ts"
   ],
   "exclude": [
-    "node_modules",
-    "**/*.spec.ts"
+    "node_modules"
   ]
 }
