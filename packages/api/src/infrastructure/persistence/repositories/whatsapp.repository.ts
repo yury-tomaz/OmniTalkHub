@@ -1,8 +1,9 @@
-import { WhatsappRepositoryInterface } from "packages/api/src/modules/whatsapp/domain/repository/whatsapp.repository.interface";
-import { PrismaClient } from '../../../generated/client';
-import { Whatsapp } from "packages/api/src/modules/whatsapp/domain/whatsapp.entity";
-import { logger } from "../../logger";
-import { PrismaClientManager } from "../../services/prisma-client-manager";
+
+import { WhatsappRepositoryInterface } from '@/modules/whatsapp/domain/repository/whatsapp.repository.interface';
+import { PrismaClient } from '@/generated/client';
+import { Whatsapp } from "@/modules/whatsapp/domain/whatsapp.entity";
+import { PrismaClientManager } from '@/infrastructure/services/prisma-client-manager';
+import { logger } from '@/infrastructure/logger';
 
 export class WhatsappRepository implements WhatsappRepositoryInterface {
  private prisma: PrismaClient;

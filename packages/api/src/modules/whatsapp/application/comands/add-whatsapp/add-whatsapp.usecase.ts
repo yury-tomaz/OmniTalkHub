@@ -1,9 +1,10 @@
-import EventDispatcherInterface from "packages/api/src/modules/@shared/domain/events/event-dispatcher.interface";
+
 import { WhatsappFactoryServiceInterface } from "../../../abstractions/whatsapp.service.interface";
 import { AddWhatsappDto } from "./add-whatsapp.dto";
 import { WhatsappAddedEvent } from "../../events/whatsapp-added.event";
 import { Baileys } from "../../../../../infrastructure/services/baileys/baileys";
 import { Whatsapp } from "../../../domain/whatsapp.entity";
+import EventDispatcherInterface from "@/modules/@shared/domain/events/event-dispatcher.interface";
 
 export class AddWhatsappUseCase {
   constructor(

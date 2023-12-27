@@ -3,12 +3,13 @@ import QRCode from 'qrcode';
 import { Baileys } from "../baileys";
 import makeWASocket, { BaileysEventMap, DisconnectReason } from "@whiskeysockets/baileys";
 import { checkWebhookAllowedEvents } from "../helpers/check-webhook-allowed-events.helper";
-import { logger } from "../../../logger";
-import {
-  WhatsappRepositoryInterface
-} from "../../../../modules/whatsapp/domain/repository/whatsapp.repository.interface";
-import { Whatsapp } from "../../../../modules/whatsapp/domain/whatsapp.entity";
-import Id from 'packages/api/src/modules/@shared/domain/value-object/id.value-object';
+
+
+import Id from '@/modules/@shared/domain/value-object/id.value-object';
+import { logger } from '@/infrastructure/logger';
+import { Whatsapp } from '@/modules/whatsapp/domain/whatsapp.entity';
+import { WhatsappRepositoryInterface } from '@/modules/whatsapp/domain/repository/whatsapp.repository.interface';
+
 
 interface CustomError extends Error {
   output?: {

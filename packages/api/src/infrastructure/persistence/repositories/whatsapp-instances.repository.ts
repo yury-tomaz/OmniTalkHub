@@ -1,5 +1,6 @@
-import { logger } from "../../logger";
-import { Baileys } from "../../services/baileys/baileys";
+
+import { logger } from '@/infrastructure/logger';
+import { Baileys } from '@/infrastructure/services/baileys/baileys';
 import sem from 'semaphore';
 
 export class WhatsappRepositoryInMemory {
