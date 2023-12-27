@@ -1,8 +1,9 @@
-import { AuthFactory } from "@/infrastructure/providers/auth/factory/auth.factory";
-import { Router, Request, Response } from "express";
+import { authProvider } from "@/presentation/app";
+import { HandlerAuthentication } from "@/presentation/middlewares/authentication.middleware";
+import { Request, Response, Router } from "express";
+
 
 const authRoute = Router();
-const authProvider = AuthFactory.create();
 
 authRoute.post('/code', async (req: Request, res: Response) => {
  const { client_id, code, realm } = req.body;
@@ -15,6 +16,13 @@ authRoute.post('/code', async (req: Request, res: Response) => {
 
 
  res.status(200).json(result);
+});
+
+authRoute.get('/test', HandlerAuthentication ,(req: Request, res: Response) => {
+ res.status(200).json({
+  message: 'ok',
+  user: req.user
+ });
 });
 
 
