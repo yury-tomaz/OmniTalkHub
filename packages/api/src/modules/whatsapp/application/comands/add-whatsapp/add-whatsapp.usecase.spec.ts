@@ -37,7 +37,7 @@ describe('Add Whatsapp Use Case - Unit Test', () => {
 
     const result = await useCase.execute(input);
 
-    expect(result).toBeUndefined();
+    expect(result).toHaveProperty('id');
     expect(whatsappProvider.create).toHaveBeenCalled();
     expect(eventDispatcher.notify).toHaveBeenCalled();
   });
