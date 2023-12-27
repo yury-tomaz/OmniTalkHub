@@ -4,5 +4,6 @@
   "baseUrl": "./",
 
  },
+
  "include": ["./packages/**/*.ts"],
 }
