@@ -2,6 +2,7 @@ import WhatsappFacadeFactory from "../../modules/whatsapp/factory/whatsapp.facad
 import { Request, Response } from "express";
 import  id from "../../modules/@shared/domain/value-object/id.value-object";
 import { AppError, HttpCode } from "../../modules/@shared/domain/exceptions/app-error";
+
 export class WhatsappController {
   private service = WhatsappFacadeFactory.create();
 
@@ -31,11 +32,18 @@ export class WhatsappController {
         webhookUrl: execute.webhookUrl,
         allowWebhook: execute.allowWebhook,
         heardEvents: execute.heardEvents,
+        createdAt: execute.createdAt,
+        updatedAt: execute.updatedAt
       },
       _links: [
         {
           rel: 'self',
           href: `${req.protocol}://${req.get('host')}/v1/whatsapp/${execute.id.id}`,
+          type: 'GET'
+        },
+        {
+          rel: 'qrCode',
+          href: `${req.protocol}://${req.get('host')}/v1/whatsapp/${execute.id.id}/qrcode`,
           type: 'GET'
         }
       ]
