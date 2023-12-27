@@ -1,13 +1,13 @@
-import { PrismaClientManager } from "../../services/prisma-client-manager";
+import { PrismaClient } from "@/generated/client";
+import { PrismaClientManager } from "@/infrastructure/services/prisma-client-manager";
+import { AppError, HttpCode } from "@/modules/@shared/domain/exceptions/app-error";
 import { NextFunction, Request, Response } from "express";
-import { AppError, HttpCode } from "../../../modules/@shared/domain/exceptions/app-error";
-import { PrismaClient } from "../../../generated/client";
 
 const prismaClientManager = PrismaClientManager.getInstance();
 
 export function prismaMiddleware(req: Request, res: Response, next: NextFunction) {
-  const tenant =   req.headers['x-tenant-id'] as string;
-
+  const tenant =  req.headers['x-tenant-id'] as string;
+  
   if (!tenant) {
     throw new AppError({
       message: 'header x-tenant-id is missing',
@@ -26,6 +26,6 @@ export function prismaMiddleware(req: Request, res: Response, next: NextFunction
     });
   }
 
-  req['prisma'] = prismaClient as PrismaClient;
+  req['prisma'] = prismaClient;
   next();
 }
