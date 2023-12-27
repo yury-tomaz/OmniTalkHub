@@ -7,13 +7,14 @@ import { GetClientService } from "../services/get-clients/get-clients.service";
 
 export class AuthFactory{
  static create(){
-  logger.info('Creating AuthProvider');
+  logger.info('Creating AuthProvider...');
   const authClientService = new AuthClientService(apiKeycloak);
   const getClientService = new GetClientService(apiKeycloak, authClientService);
   const authCodeService = new AuthCodeService(apiKeycloak, getClientService);
 
   return new AuthFacede({
-   getAccessTokenService: authCodeService
+   getAccessTokenService: authCodeService,
+   getClientService
   });
  }
 }
