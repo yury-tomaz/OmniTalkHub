@@ -26,7 +26,10 @@ export class AuthCodeService {
  ) { }
 
  public async execute(input: AuthClientServiceInputDTO): Promise<AuthClientServiceOutputDTO> {
-  const client = await this.getClientService.execute(input.client_id);
+  const client = await this.getClientService.execute({
+   client_id: input.client_id,
+    realm: input.realm
+  });
 
   if (!client) {
    throw new AppError({

@@ -2,8 +2,11 @@ import { AxiosInstance, AxiosResponse } from "axios";
 import { AuthClientService } from "../auth-client/auth-client.service";
 import { logger } from "@/infrastructure/logger";
 
-
-interface PromiseReturn {
+export interface GetClientServiceInputDTO {
+ realm: string;
+ client_id: string;
+}
+export interface GetClientServiceOutputDTO {
  id: string;
  clientId: string;
  secret: string;
@@ -15,16 +18,16 @@ export class GetClientService {
   private readonly authClientService: AuthClientService
  ) { }
 
- public async execute(client_id: string) {
+ public async execute(input: GetClientServiceInputDTO): Promise<GetClientServiceOutputDTO | undefined> {
   const { access_token } = await this.authClientService.execute();
 
-  const endpoint = `/admin/realms/teste/clients`;
+  const endpoint = `/admin/realms/${input.realm}/clients`;
 
   try {
-   const response: AxiosResponse<PromiseReturn[]> = await this.apiKeycloak.get(endpoint,
+   const response: AxiosResponse<GetClientServiceOutputDTO[]> = await this.apiKeycloak.get(endpoint,
     {
      params: {
-      clientId: client_id
+      clientId: input.client_id
      },
      headers: {
       Authorization: `Bearer ${access_token}`
