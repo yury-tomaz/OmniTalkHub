@@ -16,7 +16,7 @@ export class WhatsappController {
       });
     }
 
-    await this.service.add({
+   const execute = await this.service.add({
       tenantId: new id(tenantId),
       heardEvents: req.body.heardEvents,
       name: req.body.name,
@@ -24,6 +24,21 @@ export class WhatsappController {
       allowWebhook: req.body.allowWebhook,
     })
 
-    res.status(HttpCode['ACCEPTED']).end();
+    res.status(HttpCode['OK']).json({ 
+      content: {
+        id: execute.id.id,
+        tenantId: execute.tenantId.id,
+        webhookUrl: execute.webhookUrl,
+        allowWebhook: execute.allowWebhook,
+        heardEvents: execute.heardEvents,
+      },
+      _links: [
+        {
+          rel: 'self',
+          href: `${req.protocol}://${req.get('host')}/v1/whatsapp/${execute.id.id}`,
+          type: 'GET'
+        }
+      ]
+    });
   }
 }
