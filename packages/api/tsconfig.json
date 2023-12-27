@@ -1,0 +1,23 @@
+{
+
+  "extends": "../../tsconfig.build.json",
+  "compilerOptions": {
+    "rootDir": "./",
+    "outDir": "./dist/",
+    "target": "ES2015",
+    "module": "CommonJS",
+    "types": ["node"],
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "include": [
+    "./**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ]
+}
