@@ -14,15 +14,13 @@ const WEBHOOK_CONFIG = {
 }
 
 const DATABASE_URL = process.env.DATABASE_URL || 'mongodb://localhost:27017/wa-bot';
-const KEYCLOAK_URL = process.env.KEYCLOAK_URL || 'http://localhost:8080/auth';
+
 
 const KEYCLOAK_CONFIG =  {
   runMode: (process.env.RUN_KEYCLOAK_API_IN_MOCK_MODE && process.env.RUN_KEYCLOAK_API_IN_MOCK_MODE === 'true') || false,
   url: process.env.KEYCLOAK_API_URL || 'http://localhost:8080/auth',
-  client_id: process.env.KEYCLOAK_CLIENT_ID || 'react_client',
-  client_secret: process.env.KEYCLOAK_CLIENT_SECRET || 'secret',
-  testPassword: process.env.KEYCLOAK_TEST_PASSWORD || 'test-password',
-  testUsername: process.env.KEYCLOAK_TEST_USERNAME || 'test-username',
+  client_id: process.env.KEYCLOAK_ADMIN_CLIENT_ID || 'react_client',
+  client_secret: process.env.KEYCLOAK_ADMIN_CLIENT_SECRET || 'secret',
 }
 
 export default {
