@@ -5,9 +5,9 @@ import helmet from 'helmet';
 import cors from 'cors';
 import pinoHttp from 'pino-http';
 import compression from "compression";
-
 import { router } from './routes/routes';
 import { errorHandler } from '../modules/@shared/domain/exceptions/error-handler';
+import './process';
 
 const app = express();
 app.use(helmet());
