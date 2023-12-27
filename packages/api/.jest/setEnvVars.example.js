@@ -1,0 +1,9 @@
+process.env.NODE_ENV = 'test';
+process.env.KEYCLOAK_URL = 'http://localhost:8080';
+process.env.KEYCLOAK_REALM = 'teste';
+process.env.KEYCLOAK_CLIENT_ID = '';
+process.env.KEYCLOAK_CLIENT_SECRET = '';
+process.env.KEYCLOAK_USERNAME = '';
+process.env.KEYCLOAK_PASSWORD = '';
+process.env.KEYCLOAK_ADMIN_CLIENT_ID = '';
+process.env.KEYCLOAK_ADMIN_CLIENT_SECRET= '';
