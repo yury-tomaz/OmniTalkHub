@@ -36,6 +36,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [isMobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const customizer = useSelector((state: AppState) => state.customizer);

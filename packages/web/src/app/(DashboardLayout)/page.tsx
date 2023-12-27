@@ -2,6 +2,7 @@
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
+
 import SalesOverview from '@/app/(DashboardLayout)/components/dashboard/SalesOverview';
 import YearlyBreakup from '@/app/(DashboardLayout)/components/dashboard/YearlyBreakup';
 import RecentTransactions from '@/app/(DashboardLayout)/components/dashboard/RecentTransactions';
@@ -16,7 +17,6 @@ function Dashboard (){
       <Box mt={3}>
         <Grid container spacing={3}>
           <Grid item xs={12} lg={8}>
-          
             <SalesOverview />
           </Grid>
           <Grid item xs={12} lg={4}>
@@ -28,15 +28,6 @@ function Dashboard (){
                 <MonthlyEarnings />
               </Grid>
             </Grid>
-          </Grid>
-          <Grid item xs={12} lg={4}>
-            <RecentTransactions />
-          </Grid>
-          <Grid item xs={12} lg={8}>
-            <ProductPerformance />
-          </Grid>
-          <Grid item xs={12}>
-            <Blog />
           </Grid>
         </Grid>
       </Box>

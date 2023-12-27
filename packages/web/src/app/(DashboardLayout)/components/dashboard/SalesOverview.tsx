@@ -4,8 +4,12 @@ import Select from '@mui/material/Select';
 import { useTheme } from '@mui/material/styles';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
 import dynamic from "next/dynamic";
+import { Box, FormControl, InputLabel, Stack } from '@mui/material';
+import { DateField } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
-
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 
 const SalesOverview = () => {
 
@@ -49,7 +53,7 @@ const SalesOverview = () => {
             width: 5,
             lineCap: "butt",
             colors: ["transparent"],
-          },
+        },
         dataLabels: {
             enabled: false,
         },
@@ -84,26 +88,48 @@ const SalesOverview = () => {
             name: 'Eanings this month',
             data: [355, 390, 300, 350, 390, 180, 355, 390],
         },
-        {
-            name: 'Expense this month',
-            data: [280, 250, 325, 215, 250, 310, 280, 250],
-        },
+       
     ];
 
     return (
-
-        <DashboardCard title="Sales Overview" action={
-            <Select
-                labelId="month-dd"
-                id="month-dd"
-                value={month}
-                size="small"
-                onChange={handleChange}
+        <DashboardCard title="Estatisticas" action={
+            <Stack
+                direction="row"
+                spacing={2}
+                justifyContent="space-between"
             >
-                <MenuItem value={1}>March 2023</MenuItem>
-                <MenuItem value={2}>April 2023</MenuItem>
-                <MenuItem value={3}>May 2023</MenuItem>
-            </Select>
+
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                    }}
+                >
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DateField label="inicio" />
+                    </LocalizationProvider>
+
+                    <ArrowRightAltIcon />
+
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DateField label="fim" />
+                    </LocalizationProvider>
+                </Box>
+                <FormControl fullWidth sx={{maxWidth: '150px'}}>
+                    <InputLabel id="demo-simple-select-label">Novos contatos</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={''}
+                        label="Novos contatos"
+                    >
+                        <MenuItem value={'Novos contatos'}>Novos contatos</MenuItem>
+
+                    </Select>
+                </FormControl>
+
+
+            </Stack>
         }>
             <Chart
                 options={optionscolumnchart}
