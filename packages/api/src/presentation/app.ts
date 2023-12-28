@@ -4,9 +4,8 @@ import {logger} from '@/infrastructure/logger';
 import helmet from 'helmet';
 import cors from 'cors';
 import pinoHttp from 'pino-http';
-import compression from "compression";
+import compression from 'compression';
 import { router } from './routes/routes';
-
 import './process';
 import { AuthFactory } from '@/infrastructure/providers/auth/factory/auth.factory';
 import { errorHandler } from "@/modules/@shared/domain/exceptions/error-handler";
@@ -19,6 +18,7 @@ app.use(compression());
 app.use(express.json());
 
 const authProvider = AuthFactory.create();
+
 
 app.use(router);
 
