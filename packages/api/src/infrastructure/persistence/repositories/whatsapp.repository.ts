@@ -1,9 +1,9 @@
 
 import { WhatsappRepositoryInterface } from '@/modules/whatsapp/domain/repository/whatsapp.repository.interface';
-import { PrismaClient } from '@/generated/client';
 import { Whatsapp } from "@/modules/whatsapp/domain/whatsapp.entity";
 import { PrismaClientManager } from '@/infrastructure/services/prisma-client-manager';
 import { logger } from '@/infrastructure/logger';
+import { PrismaClient } from '@prisma/client';
 
 export class WhatsappRepository implements WhatsappRepositoryInterface {
  private prisma: PrismaClient;
@@ -49,7 +49,7 @@ export class WhatsappRepository implements WhatsappRepositoryInterface {
  async findAll(): Promise<Whatsapp[]> {
   try {
    const whatsapp = await this.prisma.whatsapp.findMany();
-   return whatsapp.map((whatsapp:any) => this.instanciateWhatsapp(whatsapp));
+   return whatsapp.map((whatsapp: any) => this.instanciateWhatsapp(whatsapp));
   } catch (error) {
    logger.error(error)
    await this.prisma.$disconnect()
