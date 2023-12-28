@@ -1,6 +1,7 @@
 node_modules
 .idea
-data
+data/*
+!data/postgres-init
 packages/**/node_modules
 packages/**/dist
 packages/**/.env
