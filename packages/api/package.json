@@ -6,7 +6,7 @@
   "scripts": {
     "compile": "tsc -p tsconfig.pkg.json",
     "dev": "ts-node-dev --transpile-only --respawn --ignore-watch node_modules -r tsconfig-paths/register ./src/main.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "dependencies": {
     "@prisma/client": "^5.7.0",
@@ -24,6 +24,7 @@
     "jwks-rsa": "^3.1.0",
     "keycloak-connect": "^23.0.3",
     "npm": "^10.2.5",
+    "pg": "^8.11.3",
     "pino": "^8.7.0",
     "pino-http": "^8.5.1",
     "pino-pretty": "^10.2.3",
@@ -42,6 +43,7 @@
     "@types/jest": "^29.5.11",
     "@types/keycloak-connect": "^7.0.0",
     "@types/node": "^20.10.4",
+    "@types/pg": "^8.10.9",
     "@types/qrcode": "^1.5.5",
     "@types/semaphore": "^1.1.4",
     "@types/sequelize": "^4.28.19",
