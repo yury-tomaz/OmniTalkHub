@@ -1,5 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, } from "@prisma/client";
 import { logger } from "../logger";
+import {Client} from 'pg';
+
 
 export class PrismaClientManager {
   private static instance: PrismaClientManager;
@@ -9,7 +11,7 @@ export class PrismaClientManager {
     this.prismaClient = {};
   }
 
-  public static getInstance(): PrismaClientManager {
+  public static getInstance(): PrismaClientManager{
     if (!PrismaClientManager.instance) {
       logger.info('Creating PrismaClientManager instance');
       PrismaClientManager.instance = new PrismaClientManager();
@@ -18,7 +20,7 @@ export class PrismaClientManager {
     return PrismaClientManager.instance;
   }
 
-  public getClient(tenant: string): PrismaClient {
+  public getClient(tenant: string): PrismaClient | null {
     try {
       if (!this.prismaClient[tenant]) {
         const databaseUrl = process.env.DATABASE_URL!.replace('public', tenant);
@@ -27,8 +29,6 @@ export class PrismaClientManager {
           datasources: {
             db: {
               url: databaseUrl,
-              max: 10,
-              idleTimeoutMillis: 30000,
             },
           },
         });
@@ -52,54 +52,63 @@ export class PrismaClientManager {
     }
   }
 
+
+
   public async createNewTenant(tenant: string): Promise<void> {
     try {
       if (!this.prismaClient[tenant]) {
         const databaseUrl = process.env.DATABASE_URL!.replace('public', 'tenant_template');
-        const prismaTenantTemplate = new PrismaClient({
-          log: ['query'],
-          datasources: {
-            db: {
-              url: databaseUrl,
-            },
-          },
+        const client = new Client({
+          connectionString: databaseUrl,
         });
 
-        const schemaTables = await prismaTenantTemplate.$queryRaw(`
+        await client.connect();
+
+        const schemaTablesQuery = await client.query(`
           SELECT table_name
           FROM information_schema.tables
           WHERE table_schema = 'tenant_template';
         `);
 
-        await prismaTenantTemplate.$executeRaw`
-          CREATE SCHEMA ${tenant};
-        `;
+        const schemaTables: { table_name: string }[] = schemaTablesQuery.rows;
 
-  
-        for (const table of schemaTables) {
-          await prismaTenantTemplate.$executeRaw(`
-            CREATE TABLE ${tenant}.${table.table_name} AS
-            SELECT * FROM tenant_template.${table.table_name};
-          `);
+        try {
+          const createSchemaQuery = `CREATE SCHEMA IF NOT EXISTS "${tenant}"`;
+          await client.query(createSchemaQuery);
+
+          for (const table of schemaTables) {
+            try {
+              const tableName = table.table_name;
+              const createTableQuery = `CREATE TABLE IF NOT EXISTS "${tenant}"."${tableName}" ()`;
+              const result = await client.query(createTableQuery);
+              logger.info(`result ${result.rowCount}`);
+            } catch (err) {
+              logger.error(err);
+              throw err;
+            }
+          }
+        } catch (err) {
+          logger.error(err);
+          throw err;
         }
 
-        prismaTenantTemplate.$disconnect();
-        
+        await client.end();
+
         this.prismaClient[tenant] = new PrismaClient({
           log: ['query'],
           datasources: {
             db: {
-              url: process.env.DATABASE_URL!.replace('public', tenant),
-              max: 10,
-              idleTimeoutMillis: 30000,
+              url: databaseUrl,
             },
-          },
+          }, 
         });
 
-        logger.info(`PrismaClient for tenant ${tenant} created`);
+
+        logger.info(`PostgreSQL Client for tenant ${tenant} created`);
       }
     } catch (error: any) {
-      logger.error(`Error creating PrismaClient for tenant ${tenant}: ${error.message}`);
+      logger.error(`Error creating PostgreSQL Client for tenant ${tenant}: ${error.message}`);
+      throw error;
     }
   }
 }
