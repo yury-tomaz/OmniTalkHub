@@ -21,7 +21,6 @@ export class WhatsappRepository implements WhatsappRepositoryInterface {
      allowWebhook: entity.allowWebhook,
      heardEvents: entity.heardEvents,
      chats: entity.chats,
-     tenantId: entity.tenantId.id,
     }
    })
   } catch (error) {
@@ -78,15 +77,31 @@ export class WhatsappRepository implements WhatsappRepositoryInterface {
   }
  }
 
+async exists(id: string): Promise<boolean> {
+    try {
+        const whatsapp = await this.prisma.whatsapp.findUnique({
+            where: {
+            id: id
+            }
+        })
+        return whatsapp ? true : false
+    } catch (error) {
+        logger.error(error)
+        await this.prisma.$disconnect()
+        process.exit(1)
+    }
+    
+}
+
  private instanciateWhatsapp(whatsapp: any): Whatsapp {
   return new Whatsapp({
-   id: whatsapp.id,
-   tenantId: whatsapp.tenantId,
-   name: whatsapp.name,
-   webhookUrl: whatsapp.webhookUrl,
-   allowWebhook: whatsapp.allowWebhook,
-   heardEvents: whatsapp.heardEvents,
-   chats: whatsapp.chats,
+    id: whatsapp.id,
+    tenantId: whatsapp.tenantId,
+    name: whatsapp.name,
+    webhookUrl: whatsapp.webhookUrl,
+    allowWebhook: whatsapp.allowWebhook,
+    heardEvents: whatsapp.heardEvents,
+    chats: whatsapp.chats,
   })
  }
 }
