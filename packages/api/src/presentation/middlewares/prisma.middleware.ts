@@ -14,7 +14,7 @@ export function prismaMiddleware(req: Request, res: Response, next: NextFunction
     });
   }
 
-  const prismaClient: PrismaClientManager = prismaClientManager.getClient(tenant);
+  const prismaClient = prismaClientManager.getClient(tenant);
 
   if (!prismaClient) {
     throw new AppError({
