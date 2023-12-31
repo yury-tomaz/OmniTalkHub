@@ -1,3 +1,4 @@
+import { logger } from "@/infrastructure/logger";
 import EventDispatcherInterface from "./event-dispatcher.interface";
 import EventHandlerInterface from "./event-handler.interface";
 import EventInterface from "./event.interface";
@@ -14,6 +15,8 @@ export default class EventDispatcher implements EventDispatcherInterface {
    this.eventHandlers[eventName] = [];
   }
   this.eventHandlers[eventName].push(eventHandler);
+
+  logger.info(`Event handler ${eventHandler.constructor.name} was registered for event ${eventName}`);
  }
 
  unregister(eventName: string, eventHandler: EventHandlerInterface): void {
