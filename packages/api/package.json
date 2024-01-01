@@ -24,7 +24,7 @@
     "jwks-rsa": "^3.1.0",
     "keycloak-connect": "^23.0.3",
     "npm": "^10.2.5",
-    "pino": "^8.7.0",
+    "pino": "^8.17.2",
     "pino-http": "^8.5.1",
     "pino-pretty": "^10.2.3",
     "qrcode": "^1.5.3",
