@@ -83,4 +83,18 @@ export class Whatsapp extends BaseEntity implements AggregateRoot{
     this._tenantId = value;
   }
 
+  toPrimitives(): Record<string, unknown> {
+    return {
+      id: this.id.id,
+      tenantId: this.tenantId.id,
+      name: this.name,
+      webhookUrl: this.webhookUrl,
+      allowWebhook: this.allowWebhook,
+      heardEvents: this.heardEvents,
+      chats: this.chats,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+    };
+  }
+
 }

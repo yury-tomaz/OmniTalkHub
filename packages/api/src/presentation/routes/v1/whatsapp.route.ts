@@ -12,4 +12,10 @@ whatsappRoute.post(
  (req: Request, res: Response) => whatsappController.add(req, res)
 );
 
+whatsappRoute.get(
+ '/:id/qrcode',
+ HandlerAuthentication,
+ (req: Request, res: Response) => whatsappController.getQrcode(req, res)
+);
+
 export default whatsappRoute;
