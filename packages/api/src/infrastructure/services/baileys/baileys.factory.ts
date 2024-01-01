@@ -5,9 +5,14 @@ import { Baileys, } from "./baileys";
 import { WhatsappFactoryServiceInterface } from "../../../modules/whatsapp/abstractions/whatsapp.service.interface";
 import { WhatsappRepository } from "../../persistence/repositories/whatsapp.repository";
 import { Whatsapp } from "../../../modules/whatsapp/domain/whatsapp.entity";
+import { WhatsappRepositoryInMemory } from "@/infrastructure/persistence/repositories/whatsapp-instances.repository";
+import { logger } from "@/infrastructure/logger";
 
 export class BaileysFactory implements WhatsappFactoryServiceInterface<Baileys>{
+  
   create(input: Whatsapp): Baileys {
+    logger.info(`Creating baileys instance for ${input.name}`)
+
     const messagesUpsert = new MessagesUpsertHandler();
     const repository = new WhatsappRepository(input.tenantId.id);
     const connectionUpdateHandler = new ConnectionUpdateHandler(repository);
@@ -18,7 +23,7 @@ export class BaileysFactory implements WhatsappFactoryServiceInterface<Baileys>{
       repository,
     );
 
-    return new Baileys({
+    const instance = new Baileys({
       name: input.name,
       allowWebhook: input.allowWebhook,
       key: input.id.id,
@@ -27,5 +32,9 @@ export class BaileysFactory implements WhatsappFactoryServiceInterface<Baileys>{
       heardEvents: input.heardEvents,
       eventHandler,
     });
+
+    WhatsappRepositoryInMemory.getInstance().create(instance)
+
+    return instance;
   }
 }
