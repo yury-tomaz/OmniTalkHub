@@ -52,7 +52,7 @@ describe('Middleware Auth e2e test', () => {
       .set('Content-Type', 'application/json')
       .set('x-refresh-token', refresh_token)
       .set('x-tenant-id', 'teste')
-      .set('x-client-id', 'react_client')
+      .set('x-client-id', 'web-client')
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('message');
