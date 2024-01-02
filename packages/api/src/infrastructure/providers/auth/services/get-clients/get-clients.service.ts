@@ -18,12 +18,12 @@ export class GetClientService {
   private readonly authClientService: AuthClientService
  ) { }
 
- public async execute(input: GetClientServiceInputDTO): Promise<GetClientServiceOutputDTO | undefined> {
+ public async execute(input: GetClientServiceInputDTO): Promise<GetClientServiceOutputDTO> {
   const { access_token } = await this.authClientService.execute();
 
   const endpoint = `/admin/realms/${input.realm}/clients`;
 
-  try {
+
    const response: AxiosResponse<GetClientServiceOutputDTO[]> = await this.apiKeycloak.get(endpoint,
     {
      params: {
@@ -35,9 +35,6 @@ export class GetClientService {
     }
    );
    return response.data[0];
-  } catch (err) {
-   logger.error(err);
-  }
-
+ 
  }
 }
