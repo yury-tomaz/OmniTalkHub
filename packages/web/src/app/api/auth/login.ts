@@ -9,14 +9,14 @@ export const authenticate = (code: string) => async (dispatch: AppDispatch) => {
   let realm;
 
   if (isLocalhost) {
-    realm = 'teste';
+    realm = process.env.NEXT_PUBLIC_REALM!;
   } else {
     realm = window.location.hostname.split('.')[0];
   }
 
   const data = {
     realm: realm, 
-    client_id: 'react_client',
+    client_id: 'web-client',
     code: code,
   }
   
@@ -26,7 +26,6 @@ export const authenticate = (code: string) => async (dispatch: AppDispatch) => {
         'Content-Type': 'application/json',
       },
     })
-
 
     dispatch(login({
       accessToken: result.data.access_token,
