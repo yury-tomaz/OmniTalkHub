@@ -68,10 +68,10 @@ export function validateAndSetTokens(input: ValidateAndSetTokensProps) {
 
 export function makeLoginUrl(){
   const isLocalhost = window.location.hostname === 'localhost';
-  let realm;
+  let realm: string;
 
   if (isLocalhost) {
-    realm = 'teste';
+    realm = process.env.NEXT_PUBLIC_REALM!;
   } else {
     const subdomain = window.location.hostname.split('.')[0];
     realm = subdomain;
@@ -84,8 +84,8 @@ export function makeLoginUrl(){
   Cookies.set("state", state);
 
   const loginUrlParams = new URLSearchParams({
-    client_id: "react_client",
-    redirect_uri: "http://localhost:3000/callback",
+    client_id: "web-client",
+    redirect_uri: "http://localhost:3001/callback",
     response_type: "token id_token code",
     nonce: nonce,
     state: state,
