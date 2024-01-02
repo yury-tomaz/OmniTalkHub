@@ -24,15 +24,20 @@ export default function Callback() {
   const state = searchParams.get("state") as string;
   const code = searchParams.get("code") as string;
 
+
   if (!accessToken || !idToken || !state) {
-   router.push("/login");
+  router.push("/login");
   }
 
   handleLogin(code);
- }, [models.auth.auth, router, operations.handleLogin]);
+ }, [models.auth.auth]);
+
+ 
 
  async function handleLogin(code: string) {
-  if (isRequesting) return;
+  if (isRequesting || isError) {
+    return;
+  }
   setIsRequesting(true);
 
   try {
@@ -50,16 +55,14 @@ export default function Callback() {
    sx={{
     display: "flex",
     justifyContent: "center",
+    flexDirection: "column",
     alignItems: "center",
     width: "100%",
     height: "100vh",
    }}
   >
-   {isError ? (
-    <h1> Error during login </h1>
-   ) : (
-    <CircularProgress />
-   )}
+    {isRequesting && <CircularProgress />}
+    {isError && <div>Something went wrong</div>}
   </Box>
  );
 }
