@@ -83,10 +83,10 @@ const Menuitems: MenuitemsType[] = [
     id: uniqueId(),
     title: "Whatsapp",
     icon: IconMessage2,
-    href: "",
+    href: "/whatsapp",
     chip: "ofline",
     variant: "outlined",
-    chipColor: "error",
+    chipColor: "success",
   },
   {
     id: uniqueId(),
