@@ -45,7 +45,7 @@ export default function RootLayout({
 }) {
   const [loading, setLoading] = React.useState(false);
   React.useEffect(() => {
-    setTimeout(() => setLoading(true), 3000);
+    setTimeout(() => setLoading(true), 200);
   }, []);
   return (
     <html lang="en" suppressHydrationWarning>

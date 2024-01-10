@@ -1,8 +1,10 @@
 node_modules
 .idea
-data
+data/*
+!data/postgres-init
 packages/**/node_modules
 packages/**/dist
 packages/**/.env
 packages/**/src/generated
 .env
+packages/api/.jest/setEnvVars.js

@@ -2,6 +2,7 @@ import WhatsappFacadeFactory from "../../modules/whatsapp/factory/whatsapp.facad
 import { Request, Response } from "express";
 import  id from "../../modules/@shared/domain/value-object/id.value-object";
 import { AppError, HttpCode } from "../../modules/@shared/domain/exceptions/app-error";
+
 export class WhatsappController {
   private service = WhatsappFacadeFactory.create();
 
@@ -16,7 +17,7 @@ export class WhatsappController {
       });
     }
 
-    await this.service.add({
+   const execute = await this.service.add({
       tenantId: new id(tenantId),
       heardEvents: req.body.heardEvents,
       name: req.body.name,
@@ -24,6 +25,54 @@ export class WhatsappController {
       allowWebhook: req.body.allowWebhook,
     })
 
-    res.status(HttpCode['ACCEPTED']).end();
+    res.status(HttpCode['OK']).json({
+      message: 'Whatsapp instance created successfully',
+      content: {
+        id: execute.id.id,
+        tenantId: execute.tenantId.id,
+        webhookUrl: execute.webhookUrl,
+        allowWebhook: execute.allowWebhook,
+        heardEvents: execute.heardEvents,
+        createdAt: execute.createdAt,
+        updatedAt: execute.updatedAt
+      },
+      _links: [
+        {
+          rel: 'self',
+          href: `${req.protocol}://${req.get('host')}/v1/whatsapp/${execute.id.id}`,
+          type: 'GET'
+        },
+        {
+          rel: 'qrCode',
+          href: `${req.protocol}://${req.get('host')}/v1/whatsapp/${execute.id.id}/qrcode`,
+          type: 'GET'
+        }
+      ]
+    });
+  }
+
+  async getQrcode(req: Request, res: Response) {
+    const tenantId = req.headers['x-tenant-id'] as string;
+    const id = req.params.id;
+
+    if(!tenantId){
+      throw new AppError({
+        message: 'header x-tenant-id is missing',
+        statusCode: HttpCode['BAD_REQUEST'],
+        isOperational: true,
+      });
+    }
+
+    const execute = await this.service.getQrcode({
+      key: id,
+      tenantId: tenantId
+    })
+
+    res.status(HttpCode['OK']).json({ 
+      message: 'Qrcode generated successfully',
+      content: {
+        qr: execute
+      }
+    });
   }
 }

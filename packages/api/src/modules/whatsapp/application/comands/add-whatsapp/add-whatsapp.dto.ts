@@ -1,4 +1,5 @@
-import Id from "packages/api/src/modules/@shared/domain/value-object/id.value-object";
+import Id from "@/modules/@shared/domain/value-object/id.value-object";
+
 
 export interface AddWhatsappDto{
   tenantId: Id;

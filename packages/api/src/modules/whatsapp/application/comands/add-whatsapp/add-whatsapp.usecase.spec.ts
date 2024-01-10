@@ -7,12 +7,7 @@ const whatsappProvider = {
   create: jest.fn()
 };
 
-const eventDispatcher = {
-  notify: jest.fn(),
-  register: jest.fn(),
-  unregister: jest.fn(),
-  unregisterAll: jest.fn()
-};
+
 
 describe('Add Whatsapp Use Case - Unit Test', () => {
   let useCase: AddWhatsappUseCase;
@@ -20,8 +15,6 @@ describe('Add Whatsapp Use Case - Unit Test', () => {
   beforeAll(() => {
     useCase = new AddWhatsappUseCase(
       whatsappProvider,
-      eventDispatcher,
-      WhatsappAddedEvent
       );
   });
 
@@ -37,8 +30,7 @@ describe('Add Whatsapp Use Case - Unit Test', () => {
 
     const result = await useCase.execute(input);
 
-    expect(result).toBeUndefined();
+    expect(result).toHaveProperty('id');
     expect(whatsappProvider.create).toHaveBeenCalled();
-    expect(eventDispatcher.notify).toHaveBeenCalled();
   });
 });

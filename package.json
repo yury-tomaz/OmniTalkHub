@@ -2,18 +2,15 @@
  "name": "omni-talk-hub",
  "version": "0.1.0",
  "description": "",
- "main": "index.js",
- "keywords": [],
  "author": "Yury Tomaz",
  "license": "ISC",
  "scripts": {
   "start": "cd packages/api && npm run start & cd ../web && npm run start",
   "start:api": "cd packages/api && npm run start",
   "start:web": "cd packages/web && npm run start",
-  "dev": "cd packages/api && npm run dev & cd ../web && npm run dev",
   "dev:api": "cd packages/api && npm run dev",
   "dev:web": "cd packages/web && npm run dev",
-  "build": "cd packages/api && npm run build && cd ../web && npm run build",
+  "dev:docs": "cd packages/docs && npm run dev",
   "build:api": "cd packages/api && npm run build",
   "build:web": "cd packages/web && npm run build",
   "prepare": "husky install"
@@ -33,6 +30,7 @@
   "typescript": "^5.3.3"
  },
  "dependencies": {
-  "qrcode": "^1.5.3"
+  "qrcode": "^1.5.3",
+  "socket.io": "^4.7.3"
  }
 }

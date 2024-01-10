@@ -23,8 +23,7 @@ function WithAuth<P extends PageParams>(
 				try {
 					dispatch(login(recoverTokens()))
 				}catch (e) {
-					console.log(e);
-					router.push('/auth/login');
+					router.push('/login');
 				}
 			}
 		}, [auth]);

@@ -1,17 +1,31 @@
 import { NextFunction, Request, Response } from "express";
 
-
 import axios from 'axios';
 import env from "../../infrastructure/config/env";
-import { logger } from "../../infrastructure/logger";
-import { AppError, HttpCode } from "../../modules/@shared/domain/exceptions/app-error";
 
+import { authProvider } from "../app";
+import { AppError, HttpCode } from "@/modules/@shared/domain/exceptions/app-error";
+import { logger } from "@/infrastructure/logger";
 
-export async function HandlerAuthentication( req: Request, res: Response, next: NextFunction) {
+export async function HandlerAuthentication(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization;
 
   const refreshToken = req.headers['x-refresh-token'] as string;
   const tenant = req.headers['x-tenant-id'] as string;
+  const client_id = req.headers['x-client-id'] as string;
+
+  const { secret } = await authProvider.getClient({
+    client_id,
+    realm: tenant
+  })
+
+  if (!secret) {
+    throw new AppError({
+      message: 'client_id is not valid',
+      statusCode: HttpCode['BAD_REQUEST'],
+      isOperational: true,
+    });
+  }
 
   if (!authHeader) {
     unauthorizedResponse('header authorization is missing');
@@ -32,8 +46,8 @@ export async function HandlerAuthentication( req: Request, res: Response, next: 
 
   const bodyParams = new URLSearchParams({
     token: token,
-    client_id: env.keycloak.client_id,
-    client_secret: env.keycloak.client_secret,
+    client_id: client_id,
+    client_secret: secret,
   }).toString();
 
   logger.info('checking token ...')
@@ -55,7 +69,7 @@ export async function HandlerAuthentication( req: Request, res: Response, next: 
   const isTokenValid = handleTokenIntrospection(response.data);
 
   if (!isTokenValid && refreshToken) {
-    const newToken = await handleRefreshToken(refreshToken, tenant);
+    const newToken = await handleRefreshToken(refreshToken, tenant, client_id, secret);
     if (newToken) {
       res.setHeader('X-New-Access-Token', newToken.access_token);
       res.setHeader('x-New-refresh-token', newToken.refresh_token);
@@ -98,13 +112,18 @@ function handleTokenIntrospection(introspect: any): boolean {
   }
 }
 
-async function handleRefreshToken(refreshToken: string, tenant: string) {
+async function handleRefreshToken(
+  refreshToken: string,
+  tenant: string,
+  client_id: string,
+  secret: string,
+) {
   const url = `${env.keycloak.url}/realms/${tenant}/protocol/openid-connect/token`;
   const bodyParams = new URLSearchParams({
     grant_type: 'refresh_token',
     refresh_token: refreshToken,
-    client_id: env.keycloak.client_id,
-    client_secret: env.keycloak.client_secret,
+    client_id: client_id,
+    client_secret: secret,
   }).toString();
 
   const response = await axios.post(url, bodyParams, {

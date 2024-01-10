@@ -4,12 +4,6 @@ import { BaileysFactory } from "../../../../../infrastructure/services/baileys/b
 
 export class CreateBaileysInstanceWhenWhatsappAdded implements EventHandlerInterface<WhatsappAddedEvent>{
   async handle(event: WhatsappAddedEvent): Promise<void> {
-    new BaileysFactory().create({
-      key: event.eventData.key,
-      allowWebhook: event.eventData.allowWebhook,
-      tenantId: event.eventData.tenantId,
-      webhookUrl: event.eventData.webhookUrl,
-      heardEvents: event.eventData.heardEvents,
-    });
+    new BaileysFactory().create(event.eventData);
   }
 }

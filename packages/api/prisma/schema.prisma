@@ -2,32 +2,35 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../src/generated/client"
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  schemas  = ["public", "tenant_template"]
 }
 
-model Tenant {
-  id        String     @id @default(uuid())
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  name      String     @unique
-  whatsapp  Whatsapp[]
+model Organization {
+  id        String    @id @default(uuid())
+  name      String    @db.VarChar(255)
+  realm     String    @unique @db.VarChar(255)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@schema("public")
 }
 
 model Whatsapp {
-  id           String  @id @default(uuid())
-  name      String   @unique
+  id           String   @id @default(uuid())
+  name         String   @unique
   webhookUrl   String
-  allowWebhook Boolean @default(false)
-  heardEvents  Json[] @default([])
+  allowWebhook Boolean  @default(false)
+  heardEvents  String[]  @default([])
   chats        Json[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  tenant    Tenant   @relation(fields: [tenantId], references: [id])
-  tenantId  String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@schema("tenant_template")
 }

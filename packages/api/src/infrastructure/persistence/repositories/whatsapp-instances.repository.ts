@@ -1,15 +1,16 @@
-import { logger } from "../../logger";
-import { Baileys } from "../../services/baileys/baileys";
+
+import { logger } from '@/infrastructure/logger';
+import { Baileys } from '@/infrastructure/services/baileys/baileys';
 import sem from 'semaphore';
 
 export class WhatsappRepositoryInMemory {
- private repository: Map<string, Baileys> = new Map();
- private instance: WhatsappRepositoryInMemory | undefined;
- private semaphore = sem(1);
+    private static instance: WhatsappRepositoryInMemory | undefined;
+    private repository: Map<string, Baileys> = new Map();
+    private semaphore = sem(1);
 
- private constructor() { }
+    private constructor() { }
 
- getInstance(): WhatsappRepositoryInMemory {
+ static getInstance(): WhatsappRepositoryInMemory {
   if (!this.instance) {
    this.instance = new WhatsappRepositoryInMemory();
   }

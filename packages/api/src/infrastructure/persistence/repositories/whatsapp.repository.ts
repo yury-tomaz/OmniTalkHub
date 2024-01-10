@@ -1,8 +1,9 @@
-import { WhatsappRepositoryInterface } from "packages/api/src/modules/whatsapp/domain/repository/whatsapp.repository.interface";
-import { PrismaClient } from '../../../generated/client';
-import { Whatsapp } from "packages/api/src/modules/whatsapp/domain/whatsapp.entity";
-import { logger } from "../../logger";
-import { PrismaClientManager } from "../../services/prisma-client-manager";
+
+import { WhatsappRepositoryInterface } from '@/modules/whatsapp/domain/repository/whatsapp.repository.interface';
+import { Whatsapp } from "@/modules/whatsapp/domain/whatsapp.entity";
+import { PrismaClientManager } from '@/infrastructure/services/prisma-client-manager';
+import { logger } from '@/infrastructure/logger';
+import { PrismaClient } from '@prisma/client';
 
 export class WhatsappRepository implements WhatsappRepositoryInterface {
  private prisma: PrismaClient;
@@ -20,7 +21,6 @@ export class WhatsappRepository implements WhatsappRepositoryInterface {
      allowWebhook: entity.allowWebhook,
      heardEvents: entity.heardEvents,
      chats: entity.chats,
-     tenantId: entity.tenantId.id,
     }
    })
   } catch (error) {
@@ -48,7 +48,7 @@ export class WhatsappRepository implements WhatsappRepositoryInterface {
  async findAll(): Promise<Whatsapp[]> {
   try {
    const whatsapp = await this.prisma.whatsapp.findMany();
-   return whatsapp.map((whatsapp:any) => this.instanciateWhatsapp(whatsapp));
+   return whatsapp.map((whatsapp: any) => this.instanciateWhatsapp(whatsapp));
   } catch (error) {
    logger.error(error)
    await this.prisma.$disconnect()
@@ -77,15 +77,31 @@ export class WhatsappRepository implements WhatsappRepositoryInterface {
   }
  }
 
+async exists(id: string): Promise<boolean> {
+    try {
+        const whatsapp = await this.prisma.whatsapp.findUnique({
+            where: {
+            id: id
+            }
+        })
+        return whatsapp ? true : false
+    } catch (error) {
+        logger.error(error)
+        await this.prisma.$disconnect()
+        process.exit(1)
+    }
+    
+}
+
  private instanciateWhatsapp(whatsapp: any): Whatsapp {
   return new Whatsapp({
-   id: whatsapp.id,
-   tenantId: whatsapp.tenantId,
-   name: whatsapp.name,
-   webhookUrl: whatsapp.webhookUrl,
-   allowWebhook: whatsapp.allowWebhook,
-   heardEvents: whatsapp.heardEvents,
-   chats: whatsapp.chats,
+    id: whatsapp.id,
+    tenantId: whatsapp.tenantId,
+    name: whatsapp.name,
+    webhookUrl: whatsapp.webhookUrl,
+    allowWebhook: whatsapp.allowWebhook,
+    heardEvents: whatsapp.heardEvents,
+    chats: whatsapp.chats,
   })
  }
 }

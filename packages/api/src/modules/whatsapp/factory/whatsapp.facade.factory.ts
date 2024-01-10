@@ -1,21 +1,22 @@
 import { WhatsappFacade } from "../facade/whatsapp.facade";
 import { AddWhatsappUseCase } from "../application/comands/add-whatsapp/add-whatsapp.usecase";
-import EventDispatcher from "../../@shared/domain/events/event-dispatcher";
 import { BaileysFactory } from "../../../infrastructure/services/baileys/baileys.factory";
-import { WhatsappAddedEvent } from "../application/events/whatsapp-added.event";
+import { GetQrcodeUseCase } from "../application/queries/get-qrcode/get-qrcode.usecase";
+import { WhatsappRepositoryInMemory } from "@/infrastructure/persistence/repositories/whatsapp-instances.repository";
 
 export default class WhatsappFacadeFactory {
   static create(): WhatsappFacade {
+    const whatsappRepositoryInMemory = WhatsappRepositoryInMemory.getInstance();
     const whatsappService = new BaileysFactory();
-    const eventDispatcher = new EventDispatcher();
     const addWhatsappUseCase = new AddWhatsappUseCase(
       whatsappService,
-      eventDispatcher,
-      WhatsappAddedEvent
     );
 
+    const getQrcodeUseCase = new GetQrcodeUseCase(whatsappRepositoryInMemory)
+
     return new WhatsappFacade({
-      addWhatsappUseCase
+      addWhatsappUseCase,
+      getQrcodeUseCase
     })
   }
 }

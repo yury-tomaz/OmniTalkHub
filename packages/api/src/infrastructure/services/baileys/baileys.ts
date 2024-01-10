@@ -59,7 +59,7 @@ export class Baileys {
 
     const socketConfig: CustomSocketConfig = {
       defaultQueryTimeoutMs: 60000,
-      printQRInTerminal: true,
+      printQRInTerminal: false,
       logger: logger,
       auth: state,
       browser: ['Whatsapp MD', 'Chrome', '4.0.0'] as WABrowserDescription,

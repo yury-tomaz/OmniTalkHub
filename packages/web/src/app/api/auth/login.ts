@@ -1,17 +1,31 @@
 import { AppDispatch } from "@/store/store";
-import api from "@/utils/axios";
 import { login } from "@/store/auth/auth-slice";
+import axiosServices from "@/utils/axios";
 
-export const authenticate = (input: any)  => async (dispatch: AppDispatch) => {
+
+export const authenticate = (code: string) => async (dispatch: AppDispatch) => {
+
+  const isLocalhost = window.location.hostname === 'localhost';
+  let realm;
+
+  if (isLocalhost) {
+    realm = process.env.NEXT_PUBLIC_REALM!;
+  } else {
+    realm = window.location.hostname.split('.')[0];
+  }
+
+  const data = {
+    realm: realm, 
+    client_id: 'web-client',
+    code: code,
+  }
+  
   try {
-    const result = await api.post('/api/v1/auth/login', {
-      username: input.user,
-      password: input.password,
-    },{
+    const result = await axiosServices.post('/auth/code', data, {
       headers: {
-        'x-tenant-id': 'teste',
-      }
-    });
+        'Content-Type': 'application/json',
+      },
+    })
 
     dispatch(login({
       accessToken: result.data.access_token,
@@ -19,9 +33,9 @@ export const authenticate = (input: any)  => async (dispatch: AppDispatch) => {
       refreshToken: result.data.refresh_token,
       sessionState: result.data.session_state,
     }));
-return
-  }catch (e: any) {
-    console.log(e.message);
-    throw new Error(e.message);
+    return;
+    
+  } catch (e: any) {
+    throw new Error(e)
   }
 }

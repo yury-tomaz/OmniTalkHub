@@ -12,9 +12,15 @@ import * as dropdownData from './data';
 import { IconMail } from '@tabler/icons-react';
 import { Stack } from '@mui/system';
 import Image from 'next/image';
+import { useDispatch, useSelector } from '@/store/hooks';
+import { logout } from '@/store/auth/auth-slice';
+import { useRouter } from 'next/navigation';
 
 
 const Profile = () => {
+  const auth = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const router = useRouter();
   const [anchorEl2, setAnchorEl2] = useState(null);
   const handleClick2 = (event: any) => {
     setAnchorEl2(event.currentTarget);
@@ -22,6 +28,10 @@ const Profile = () => {
   const handleClose2 = () => {
     setAnchorEl2(null);
   };
+
+  const handleLogout = () => {
+    dispatch(logout());
+  }
 
   return (
     <Box>
@@ -67,10 +77,11 @@ const Profile = () => {
       >
         <Typography variant="h5">User Profile</Typography>
         <Stack direction="row" py={3} spacing={2} alignItems="center">
-        <Avatar src={"/images/profile/user-1.jpg"} alt={"ProfileImg"} sx={{ width: 95, height: 95 }} />
+          <Avatar src={"/images/profile/user-1.jpg"} alt={"ProfileImg"} sx={{ width: 95, height: 95 }} />
           <Box>
             <Typography variant="subtitle2" color="textPrimary" fontWeight={600}>
-              Mathew Anderson
+              {/* @ts-ignore */}
+              {auth.auth?.name}
             </Typography>
             <Typography variant="subtitle2" color="textSecondary">
               Designer
@@ -83,7 +94,8 @@ const Profile = () => {
               gap={1}
             >
               <IconMail width={15} height={15} />
-              info@modernize.com
+              {/* @ts-ignore */}
+              {auth.auth?.email}
             </Typography>
           </Box>
         </Stack>
@@ -141,21 +153,24 @@ const Profile = () => {
           </Box>
         ))}
         <Box mt={2}>
-          <Box bgcolor="primary.light" p={3} mb={3} overflow="hidden" position="relative">
-            <Box display="flex" justifyContent="space-between">
-              <Box>
-                <Typography variant="h5" mb={2}>
-                  Unlimited <br />
-                  Access
-                </Typography>
-                <Button variant="contained" color="primary">
-                  Upgrade
-                </Button>
+          {
+            /* <Box bgcolor="primary.light" p={3} mb={3} overflow="hidden" position="relative">
+              <Box display="flex" justifyContent="space-between">
+                <Box>
+                  <Typography variant="h5" mb={2}>
+                    Unlimited <br />
+                    Access
+                  </Typography>
+                  <Button variant="contained" color="primary">
+                    Upgrade
+                  </Button>
+                </Box>
+                <Image src={"/images/backgrounds/unlimited-bg.png"} width={150} height={183} alt="unlimited" className="signup-bg" />
               </Box>
-              <Image src={"/images/backgrounds/unlimited-bg.png"} width={150} height={183} alt="unlimited" className="signup-bg" />
-            </Box>
-          </Box>
-          <Button href="/auth/auth1/login" variant="outlined" color="primary" component={Link} fullWidth>
+            </Box> */
+          }
+          <Button onClick={handleLogout}
+            variant="outlined" color="primary" fullWidth>
             Logout
           </Button>
         </Box>
