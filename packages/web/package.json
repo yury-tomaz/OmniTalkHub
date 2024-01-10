@@ -27,7 +27,7 @@
     "axios-mock-adapter": "^1.22.0",
     "chance": "^1.1.11",
     "date-fns": "^3.0.5",
-    "emoji-picker-react": "^4.5.2",
+    "emoji-picker-react": "^4.6.5",
     "i18next": "^23.5.1",
     "jose": "^5.2.0",
     "js-cookie": "^3.0.5",
