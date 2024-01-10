@@ -63,6 +63,7 @@ import {
   IconBoxAlignLeft,
   IconBorderStyle2,
   IconAppWindow,
+  IconTransfer
 } from "@tabler/icons-react";
 
 const Menuitems: MenuitemsType[] = [
@@ -105,7 +106,13 @@ const Menuitems: MenuitemsType[] = [
     id: uniqueId(),
     title: "configurações",
     icon: IconSettings,
-    href: "/configuracoes", 
+    href: "/configuracoes",
+  },
+  {
+    id: uniqueId(),
+    title: "Transmissão",
+    icon: IconTransfer,
+    href: "/streaming",
   }
 ];
 
