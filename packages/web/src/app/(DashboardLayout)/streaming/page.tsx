@@ -1,6 +1,6 @@
 function Streaming() {
   return (
-    <h1>Streaming</h1>
+    <h1>Streaming New</h1>
   )
 }
 
