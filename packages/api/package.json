@@ -45,7 +45,7 @@
     "@types/semaphore": "^1.1.4",
     "@types/sequelize": "^4.28.19",
     "@types/uuid": "^9.0.7",
-    "@types/validator": "^13.11.7",
+    "@types/validator": "^13.11.8",
     "prisma": "^5.7.0",
     "supertest": "^6.3.3",
     "ts-node": "^10.9.2",
