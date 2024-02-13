@@ -8,3 +8,5 @@ packages/**/.env
 packages/**/src/generated
 .env
 packages/api/.jest/setEnvVars.js
+packge-lock.json
+yarn.lock
