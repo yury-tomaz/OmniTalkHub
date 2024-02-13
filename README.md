@@ -1,9 +1,22 @@
+O OmniTalkHub está em desenvolvimento para se tornar uma plataforma avançada de comunicação projetada para oferecer uma experiência integrada e fluida em todos os canais de comunicação. 
+
+Nosso objetivo é fornecer suporte para uma variedade de canais populares, incluindo Facebook Messenger, WhatsApp, Instagram, LiveChat e muito mais, permitindo que as empresas se conectem com seus clientes onde quer que estejam.
+
+### Recursos planejados incluem:
+- Integração com os canais da Meta (Facebook Messenger e Instagram) e outros canais populares de comunicação.
+
+- Capacidade multitenant, permitindo que várias empresas gerenciem suas próprias instâncias do OmniTalkHub em um único ambiente.
+
+- Chat ao vivo em tempo real para interações instantâneas com os clientes.
+
+- Análises detalhadas e relatórios para acompanhar o desempenho e melhorar a eficácia das interações.
 O OmniTalkHub é um mono-repositório que utiliza NPM workspaces para gerenciar os projetos. Cada projeto é um pacote NPM e pode ser publicado individualmente.
 
-![Alt text](docs/image.png)
-
+- Personalização flexível para atender às necessidades específicas de cada empresa, incluindo branding e configurações de resposta automática.
 
 # Instalação
+
+O OmniTalkHub é um mono-repositório que utiliza NPM workspaces para gerenciar os projetos. Cada projeto é um pacote NPM e pode ser publicado individualmente.
 
 1. Clone o repositório.
 2. Entre na pasta do projeto.
