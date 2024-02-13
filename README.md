@@ -14,6 +14,17 @@ O OmniTalkHub é um mono-repositório que utiliza NPM workspaces para gerenciar 
 
 - Personalização flexível para atender às necessidades específicas de cada empresa, incluindo branding e configurações de resposta automática.
 
+### Tecnologias Utilizadas:
+- Node.js
+- Express.js
+- Next.js
+- keycloak
+- Prisma Client
+- PostgreSQL
+- Docker
+- Material UI
+  
+
 # Estrutura do Projeto
 Para uma visão mais detalhada da estrutura do projeto, recomendamos acessar o arquivo [STRUCTURE.md](STRUCTURE.md). Este arquivo fornece uma descrição abrangente da organização dos diretórios e arquivos dentro do projeto OmniTalkHub, ajudando os desenvolvedores a navegar e entender melhor a estrutura do código-fonte.
 
